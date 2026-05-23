@@ -141,8 +141,7 @@
         JLabel highScoreLabel;
         int highScore = 0;
         JButton pauseButton;
-        JButton helpButton;
-
+    
         // Booster and Hint variables
         int boosterCount = 0;
         int hintCount = 0;
@@ -284,15 +283,6 @@
         pauseButton.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
         pauseButton.addActionListener(e -> togglePause());
 
-        // HELP BUTTON
-        helpButton = new JButton("❓");
-        helpButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 24));
-        helpButton.setBackground(new Color(70, 70, 100));
-        helpButton.setForeground(Color.WHITE);
-        helpButton.setFocusPainted(false);
-        helpButton.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
-        helpButton.addActionListener(e -> showHelp());
-
         // SOUND BUTTON
         JButton soundButton = new JButton("🔊");
         soundButton.setFont(new Font("Segoe UI Symbol", Font.BOLD, 24));
@@ -312,7 +302,6 @@
         homeButton.addActionListener(e -> backToMainMenu());
 
         rightPanel.add(pauseButton);
-        rightPanel.add(helpButton);
         rightPanel.add(soundButton);
         rightPanel.add(homeButton);
 
@@ -612,25 +601,6 @@
 
             pauseButton.setText("⏸️");
         }
-    }
-
-    // TOGGLE HELP/INSTRUCTIONS
-    void showHelp() {
-        String helpText = "🎮 HOW TO PLAY 🎮\n\n"
-        + "• Click on cards to flip them\n"
-            + "• Match pairs of identical memes\n"
-            + "• Wrong match = -5 seconds\n"
-            + "• Correct match = +10 score, +3 seconds, +5 coins\n"
-            + "• Use Booster: +10 seconds (cost: 10 coins)\n"
-            + "• Use Hint: Shows all cards for 1.5 seconds (cost: 8 coins)\n"
-            + "• Complete all pairs before time runs out!\n\n"
-            + "🎯 TIPS 🎯\n"
-            + "• Try to remember card positions\n"
-            + "• Buy boosters when time is low\n"
-            + "• Use hints to reveal hard-to-find pairs\n\n"
-            + "Good luck! 🍀";
-
-        JOptionPane.showMessageDialog(frame, helpText, "Game Instructions", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // TOGGLE SOUND ON/OFF 

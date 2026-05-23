@@ -10,6 +10,11 @@ public class MemeRotMemory {
     //static boolean muted = false;
     static Font minecraftFont;
 
+  static void setFullScreen(JFrame window) {
+    window.setExtendedState(JFrame.MAXIMIZED_BOTH);  // ← Use 'window', not 'frame'
+}
+
+
     // LOAD MINECRAFT FONT
     static void loadMinecraftFont() {
         try {
@@ -149,6 +154,8 @@ public class MemeRotMemory {
         }
     }
 
+    
+
     public static void openDifficultyScreen() {
         if (menuClip != null) {
             menuClip.stop();
@@ -191,7 +198,7 @@ public class MemeRotMemory {
         hard.setForeground(Color.WHITE);
         backButton.setForeground(Color.WHITE);
 
-        background.add(Box.createVerticalStrut(400));
+        background.add(Box.createVerticalStrut(600));
         background.add(easy);
         background.add(Box.createVerticalStrut(20));
         background.add(medium);
@@ -200,6 +207,7 @@ public class MemeRotMemory {
         background.add(Box.createVerticalStrut(20));
         background.add(backButton);
         background.add(Box.createVerticalGlue());
+        
 
         easy.addActionListener(e -> {
             if (menuClip != null) {
@@ -238,6 +246,8 @@ public class MemeRotMemory {
 
         window.add(background);
         window.setVisible(true);
+         setFullScreen(window);
+
     }
 
     public static void openMainMenu() {
@@ -252,23 +262,33 @@ public class MemeRotMemory {
         menuBackground.setLayout(new BoxLayout(menuBackground, BoxLayout.Y_AXIS));
 
         RoundedButton start = new RoundedButton("PLAY");
+        RoundedButton howToPlay = new RoundedButton("HOW TO PLAY"); 
         RoundedButton exit = new RoundedButton("EXIT");
 
         start.setFont(minecraftFont.deriveFont(28f));
+        howToPlay.setFont(minecraftFont.deriveFont(24f)); 
         exit.setFont(minecraftFont.deriveFont(28f));
 
         start.setMaximumSize(new Dimension(250, 70));
+        howToPlay.setMaximumSize(new Dimension(250, 60));
         exit.setMaximumSize(new Dimension(250, 70));
+
         start.setAlignmentX(Component.CENTER_ALIGNMENT);
+        howToPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
         exit.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         start.setBackground(new Color(46, 204, 113));
+        howToPlay.setBackground(new Color(52, 152, 219));
         exit.setBackground(new Color(231, 76, 60));
+
         start.setForeground(Color.WHITE);
+        howToPlay.setForeground(Color.WHITE);
         exit.setForeground(Color.WHITE);
 
-        menuBackground.add(Box.createVerticalStrut(420));
+        menuBackground.add(Box.createVerticalStrut(600));
         menuBackground.add(start);
+        menuBackground.add(Box.createVerticalStrut(20));
+        menuBackground.add(howToPlay);
         menuBackground.add(Box.createVerticalStrut(25));
         menuBackground.add(exit);
         menuBackground.add(Box.createVerticalGlue());
@@ -278,13 +298,61 @@ public class MemeRotMemory {
             MemeRotMemory.openDifficultyScreen();
         });
 
+        howToPlay.addActionListener(e -> {
+             showHowToPlayDialog(window);
+    });
+
         exit.addActionListener(e -> System.exit(0));
 
         window.add(menuBackground);
         window.setVisible(true);
+        setFullScreen(window);
     }
+
+    public static void showHowToPlayDialog(JFrame parent) {
+    String howToPlayText = 
+        "🎮 HOW TO PLAY 🎮\n\n" +
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
+        "📌 GAME RULES\n" +
+        "───────────────────────────────────────────────────\n" +
+        "• Click on cards to flip them over\n" +
+        "• Find and match two identical cards\n" +
+        "• Match all pairs before time runs out!\n\n" +
+        
+        "⏱️ TIME SYSTEM\n" +
+        "───────────────────────────────────────────────────\n" +
+        "• Wrong match: ❌ -5 seconds\n" +
+        "• Correct match: ✅ +3 seconds\n" +
+        "• Time bonus for correct match: +3 seconds\n\n" +
+        
+        "💰 SCORE & COINS\n" +
+        "───────────────────────────────────────────────────\n" +
+        "• Each correct match: +10 points\n" +
+        "• Each correct match: +5 coins\n" +
+        "• High score is saved automatically!\n\n" +
+        
+        "🛒 SHOP ITEMS\n" +
+        "───────────────────────────────────────────────────\n" +
+        "• BOOSTER (10 coins): Adds +10 seconds to timer\n" +
+        "• HINT (8 coins): Shows all unmatched cards for 1.5s\n\n" +
+        
+        "🎯 TIPS\n" +
+        "───────────────────────────────────────────────────\n" +
+        "• Try to remember card positions\n" +
+        "• Buy boosters when time is low\n" +
+        "• Use hints to find hard-to-match pairs\n" +
+        "• Save coins for关键时刻\n\n" +
+        
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+        "           Good luck and have fun! 🍀";
+    
+    JOptionPane.showMessageDialog(parent, howToPlayText, 
+        "📖 HOW TO PLAY - Meme Rot Memory", 
+        JOptionPane.INFORMATION_MESSAGE);
+}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> showLoadingScreen());
     }
+     
 }

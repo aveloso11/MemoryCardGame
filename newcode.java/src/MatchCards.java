@@ -499,8 +499,6 @@
         setGameBackground();
         setFullScreen();
         
-        int topOffset = 60;
-        int menuHeight = frame.getHeight() - 180; // shorter menu
 
         hideCardTimer = new Timer(1500, new ActionListener() {
             @Override

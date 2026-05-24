@@ -43,8 +43,10 @@ public class MemeRotMemory {
         
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+             super.paintComponent(g);
+
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             
             // Draw rounded background
             if (getModel().isPressed()) {
@@ -171,7 +173,7 @@ public class MemeRotMemory {
         window.setLocationRelativeTo(null);
         window.setResizable(true);
 
-        BackgroundPanel background = new BackgroundPanel("background.png");
+        BackgroundPanel background = new BackgroundPanel("src/img/landscape.jpg");
         background.setLayout(new BoxLayout(background, BoxLayout.Y_AXIS));
 
         // Create rounded buttons
@@ -258,7 +260,7 @@ public class MemeRotMemory {
         window.setLocationRelativeTo(null);
         window.setResizable(true);
 
-        BackgroundPanel menuBackground = new BackgroundPanel("background.png");
+        BackgroundPanel menuBackground = new BackgroundPanel("src/img/landscape.jpg");
         menuBackground.setLayout(new BoxLayout(menuBackground, BoxLayout.Y_AXIS));
 
         RoundedButton start = new RoundedButton("PLAY");

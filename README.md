@@ -4,7 +4,7 @@ A fun memory card game where you match pairs of meme images. Built with Java Swi
 
 ## 🎮 Features
 
-- **3 Difficulty Levels**: Easy (3x4), Normal (4x4), Hard (4x5)
+- **3 Difficulty Levels**: Easy (3x4), Medium (4x4), Hard (4x5)
 - **Coin System**: Earn coins by matching cards
 - **Shop**: Buy boosters (+10 seconds) and hints (reveal cards for 1.5 seconds)
 - **Sound Effects**: Card flip, win, lose sounds

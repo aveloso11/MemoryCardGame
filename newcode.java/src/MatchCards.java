@@ -325,14 +325,6 @@
             tile.setContentAreaFilled(false);
             tile.setOpaque(false);
 
-            int borderThickness;
-            if (cardWidth >= 120) {
-                borderThickness = 6;
-            } else if (cardWidth >= 105) {
-                borderThickness = 5; 
-            } else {
-                borderThickness = 4;
-            }
             tile.setBorder(BorderFactory.createLineBorder(Color.WHITE, 4));
 
             // Action cards 

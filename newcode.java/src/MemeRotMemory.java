@@ -11,7 +11,7 @@ public class MemeRotMemory {
     static Font minecraftFont;
 
   static void setFullScreen(JFrame window) {
-    window.setExtendedState(JFrame.MAXIMIZED_BOTH);  // ← Use 'window', not 'frame'
+    window.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 }
 
 
@@ -178,11 +178,11 @@ public class MemeRotMemory {
 
         // Create rounded buttons
         RoundedButton easy = new RoundedButton("EASY");
-        RoundedButton medium = new RoundedButton("MEDIUM");
+        RoundedButton normal = new RoundedButton("NORMAL");
         RoundedButton hard = new RoundedButton("HARD");
         RoundedButton backButton = new RoundedButton("BACK");
 
-        RoundedButton[] buttons = {easy, medium, hard, backButton};
+        RoundedButton[] buttons = {easy, normal, hard, backButton};
 
         for (RoundedButton btn : buttons) {
             btn.setFont(minecraftFont.deriveFont(24f));
@@ -191,19 +191,19 @@ public class MemeRotMemory {
         }
 
         easy.setBackground(new Color(46, 204, 113));
-        medium.setBackground(new Color(241, 196, 15));
+        normal.setBackground(new Color(241, 196, 15));
         hard.setBackground(new Color(231, 76, 60));
         backButton.setBackground(Color.GRAY);
 
         easy.setForeground(Color.WHITE);
-        medium.setForeground(Color.WHITE);
+        normal.setForeground(Color.WHITE);
         hard.setForeground(Color.WHITE);
         backButton.setForeground(Color.WHITE);
 
         background.add(Box.createVerticalStrut(600));
         background.add(easy);
         background.add(Box.createVerticalStrut(20));
-        background.add(medium);
+        background.add(normal);
         background.add(Box.createVerticalStrut(20));
         background.add(hard);
         background.add(Box.createVerticalStrut(20));
@@ -221,7 +221,7 @@ public class MemeRotMemory {
             new MatchCards("easy");
         });
 
-        medium.addActionListener(e -> {
+        normal.addActionListener(e -> {
             if (menuClip != null) {
                 menuClip.stop();
                 menuClip.close();

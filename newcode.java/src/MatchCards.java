@@ -147,6 +147,7 @@
             // Booster and Hint variables
             int boosterCount = 0;
             int hintCount = 0;
+            boolean hintActive = false;
             int coins = 0;
             JButton boosterButton;
             JButton tryAgainButton;
@@ -847,14 +848,28 @@
 
 
         void updateShopButtons() {
-            // Booster button - Enable if have coins Or have boosters
+            
+            // UPDATE BOOSTERR BUTTON TEXT BASED OWNERSHIP
+            if (boosterCount > 0) {
+                boosterButton.setText("Booster [" + boosterCount + "] (Click to USE)");
+            } else {
+                 boosterButton.setText("Booster [0] (10 coins to BUY)");
+            }
+
+            // UPDATE HINT BUTTON TEXT BASED ON OWNERSHIP
+             if (hintCount > 0) {
+                hintButton.setText("Hint [" + hintCount + "] (Click to USE)");
+             } else { 
+                hintButton.setText("Hint [0] (8 coins to BUY)");
+             }
+
+             // ENABLE LOGIC (KEEPS BUTTON GRAYED OUT WHEN NOT USABLE)
             if ((boosterCount > 0 || coins >= 10) && gameReady) {
                 boosterButton.setEnabled(true);
             } else {
                 boosterButton.setEnabled(false);
             }
-
-            // Hint button - Enable if have coins Or havve hints 
+ 
             if ((hintCount > 0 || coins >= 8) && gameReady) {   
                 hintButton.setEnabled(true);
             } else {
@@ -867,10 +882,14 @@
 
         // USE OR BUY 
         void useOrBuyBooster() {
+            if (!gameActive || !gameReady) {
+                JOptionPane.showMessageDialog(frame, "Game is not active right now!"); 
+                return;
+            }
+
             if (boosterCount > 0 && gameReady) {
                 // USE BOOSTER
                 boosterCount--;
-                boosterButton.setText("Booster [" + boosterCount + "] (10 coins to buy)");
                 timeLeft += 10;
                 timerLabel.setText("Time: " + timeLeft + "s");
                 JOptionPane.showMessageDialog(frame,"BOOSTER USED! + 10 seconds!");
@@ -880,9 +899,8 @@
                 // BUY BOOSTER
                 coins -= 10;
                 boosterCount++;
-                boosterButton.setText("Booster [" + boosterCount +"] (10 coins to buy)");
                 coinsLabel.setText("Coins: " + coins);
-                JOptionPane.showMessageDialog(frame, "BOOSTER BOUGHT! You have " + boosterCount + " booster. Click aggain to use!");
+                JOptionPane.showMessageDialog(frame, "BOOSTER BOUGHT! You have " + boosterCount + " booster. Click again to use!");
                 updateShopButtons();
             } 
             else {
@@ -892,7 +910,18 @@
 
         // USE OR BUY
         void  useOrBuyHint() {
+             if (!gameActive || !gameReady) {
+                JOptionPane.showMessageDialog(frame, "Game is not active right now!");
+                return;
+             }
+
+             if (hintActive) {
+                  JOptionPane.showMessageDialog(frame, "Hint already active! Wait a moment.");
+                    return;
+             }
+
             if (hintCount > 0 && gameReady) {
+                hintActive = true;
                 // PAUSE THE GAME FIRST 
                 gameActive = false;
                 gameReady = false;  
@@ -903,7 +932,7 @@
 
             // USE HINT  AFTER CLICKING "OK" 
             hintCount--;
-            hintButton.setText("Hint [" + hintCount + "] (8 coins to buy)");
+            updateShopButtons();
 
             // NOW IT FLIPS ALL UNMATCHED CARDS FACE UP AFTER CLICKING "OK"
             ArrayList<Integer> unmatchedIndices = new ArrayList<>();
@@ -925,25 +954,25 @@
                 gameReady = true;
                 if (gameTimer !=null) gameTimer.start();
                 updateShopButtons();
+                hintActive = false;
 
             });
             hintTimer.setRepeats(false);
             hintTimer.start();
 
-            updateShopButtons();
         }
         else if (coins >= 8 && gameReady) {
             // BUY HINT 
             coins -= 8;
             hintCount++;
-            hintButton.setText("Hint [" + hintCount + "] (8 coins to buy)");
             coinsLabel.setText("Coins: " + coins);
-            JOptionPane.showMessageDialog(frame, "HINT BOUGHT! You have " + hintCount + "hint. Click again to use!");
+            JOptionPane.showMessageDialog(frame, "HINT BOUGHT! You have " + hintCount + "hint. Click again to USE!");
+            updateShopButtons();
         }
         else {
             JOptionPane.showMessageDialog(frame, "Need 8 coins to buy OR have a hint to use!");
         }
-        }
+    }
 
             // TRY AGAIN 
             void tryAgain() {
@@ -963,11 +992,7 @@
                     scoreLabel.setText("Score: " + score);
                     coinsLabel.setText("Coins: " + coins);
 
-                    boosterButton.setText("Booster [" + boosterCount + "] (10 coins)");
-                    hintButton.setText("Hint [" + hintCount + "] (8 coins)");
-
-                    boosterButton.setEnabled(false);
-                    hintButton.setEnabled(false);
+                    updateShopButtons();
 
                     gameActive = true;
                     gameReady = false;

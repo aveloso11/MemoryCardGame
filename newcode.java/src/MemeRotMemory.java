@@ -325,7 +325,6 @@ public class MemeRotMemory {
         "───────────────────────────────────────────────────\n" +
         "• Wrong match: ❌ -5 seconds\n" +
         "• Correct match: ✅ +3 seconds\n" +
-        "• Time bonus for correct match: +3 seconds\n\n" +
         
         "💰 SCORE & COINS\n" +
         "───────────────────────────────────────────────────\n" +
@@ -343,7 +342,7 @@ public class MemeRotMemory {
         "• Try to remember card positions\n" +
         "• Buy boosters when time is low\n" +
         "• Use hints to find hard-to-match pairs\n" +
-        "• Save coins for关键时刻\n\n" +
+        "• Save coins for booster and hints\n\n" +
         
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
         "           Good luck and have fun! 🍀";

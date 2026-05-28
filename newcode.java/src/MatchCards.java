@@ -1021,8 +1021,7 @@
                     hideCardTimer.start();
                     
                 } else {
-                    // USER CLICK NO = GO TO MAIN MENU
-                    returnToDifficultyScreen();
+                    
                 }
             }
 

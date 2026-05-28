@@ -1164,8 +1164,16 @@
 
                 timeLeft = 60;
                 score = 0;
+                coins = 0;
                 timerLabel.setText("Time: " + timeLeft + "s");
                 scoreLabel.setText("Score: " + score);
+                coinsLabel.setText("Coins: " + coins);
+
+                // RESET BOOSTER AND HINT COUNTS 
+                boosterCount = 0;
+                hintCount = 0;
+                updateShopButtons();
+
                 gameActive = true;
                 gameReady = false; 
 

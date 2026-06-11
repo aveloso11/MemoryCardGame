@@ -428,9 +428,7 @@ import java.io.File; // LOADING SOUND FILES
 
                                     // PLAY WIN SOUND 
                                     playWinSound();
-                                    confettiPanel.setVisible(true);
-                                    startConfetti();
-
+                                    
                                     // START CONFETTI (LOOPING)
                                     confettiPanel.setVisible(true);
                                     startConfetti();

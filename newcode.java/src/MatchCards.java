@@ -1,9 +1,9 @@
-        import java.awt.*; // GRAPHICS, COLOR, LAYOUTS
-        import java.awt.event.*; // BUTTON CLICKS AND MOUSE EVENTS
-        import java.util.ArrayList; // DYNAMIC ARRAYS FOR CARDS AND CONFETTI
-        import javax.swing.*; // GUI COMPONENTS (JFRAME, JBUTTON, JPANEL)
-        import javax.sound.sampled.*; // AUDIO PLAYBACK FOR SOUNDS
-        import java.io.File; // LOADING SOUND FILES
+import java.awt.*; // GRAPHICS, COLOR, LAYOUTS
+import java.awt.event.*; // BUTTON CLICKS AND MOUSE EVENTS
+import java.util.ArrayList; // DYNAMIC ARRAYS FOR CARDS AND CONFETTI
+import javax.swing.*; // GUI COMPONENTS (JFRAME, JBUTTON, JPANEL)
+import javax.sound.sampled.*; // AUDIO PLAYBACK FOR SOUNDS
+import java.io.File; // LOADING SOUND FILES
 
         public class MatchCards {
 
@@ -29,21 +29,37 @@
             }
 
             class Confetti {
-                int x , y, size, speed; // POSITION AND SPEED OF THE CONFETTI
-                Color color; // COLOR OF CONFETTI
-                int type;  // SHAPE OF CONFETTI
-
-                Confetti(int x, int y, int size, int speed, Color color, int type) {
+                float x, y;           // FLOAT FOR SMOOTH MOVEMENT
+                float dx;             // HORIZONTAL DRIFT
+                float speed;          // VERTICAL SPEED
+                int size;
+                Color color;
+                int type;             // 0=RECT, 1=CIRCLE, 2=DIAMOND, 3=STREAMER (WAVY)
+                float angle;          // CURRENT ROTATION ANGLE
+                float angleSpeed;     // ROTATION SPEED 
+                float waveOffset;     // FOR STREAMER WAVE EFFECT 
+                float waveSpeed;      // HOW FAST THE WAVE MOVE REPEATEDLY BACK AND FORTH
+                
+                Confetti(float x, float y, int size, float speed, Color color, int type) {
                     this.x = x;
                     this.y = y;
                     this.size = size;
                     this.speed = speed;
                     this.color = color;
                     this.type = type;
+                    this.dx = (float)(Math.random() * 2 - 1);   // -1 TO +1 HORIZONTAL DRIFT
+                    this.angle = (float)(Math.random() * 360);  
+                    this.angleSpeed = (float)(Math.random() * 6 - 3);   // SPIN LEFT OR RIGHT
+                    this.waveOffset = (float)(Math.random() * Math.PI * 2);
+                    this.waveSpeed = (float)(0.05 + Math.random() * 0.1);
                 }
 
                 void fall() {
                     y += speed;
+                    x += dx;
+                    angle += angleSpeed;
+                    waveOffset += waveSpeed;
+                    x += (float)(Math.sin(waveOffset) * 0.5);
                 }
             }
 
@@ -93,44 +109,47 @@
                     Graphics2D g2d = (Graphics2D) g;
                     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                for (Confetti c : confettiList) {
-                    g2d.setColor(c.color);
-                    
-                    // Draw different shapes based on type
-                    switch (c.type) {
-                        case 0: // RECTANGLE (strip)
-                            g2d.fillRect(c.x, c.y, c.size, c.size / 2);
-                            break;
-                        case 1: // CIRCLE
-                            g2d.fillOval(c.x, c.y, c.size, c.size);
-                            break;
-                        case 2: // DIAMOND (square rotated)
-                            int[] xPoints = {
-                                c.x + c.size/2, 
-                                c.x + c.size, 
-                                c.x + c.size/2, 
-                                c.x
-                            };
-                            int[] yPoints = {
-                                c.y, 
-                                c.y + c.size/2, 
-                                c.y + c.size, 
-                                c.y + c.size/2
-                            };
-                            g2d.fillPolygon(xPoints, yPoints, 4);
-                            break;
-                        case 3: // TRIANGLE
-                            int[] triX = {c.x + c.size/2, c.x + c.size, c.x};
-                            int[] triY = {c.y, c.y + c.size, c.y + c.size};
-                            g2d.fillPolygon(triX, triY, 3);
-                            break;
-                        default: // RECTANGLE
-                            g2d.fillRect(c.x, c.y, c.size, c.size / 2);
-                            break;
+                    for (Confetti c : confettiList) {
+                        Graphics2D g2 = (Graphics2D) g2d.create(); // ISOLATED TRANSFORM PER PIECE
+                        g2.setColor(c.color);
+                        g2.translate(c.x + c.size / 2.0, c.y + c.size / 2.0);
+                        g2.rotate(Math.toRadians(c.angle));
+
+                        int half = c.size / 2;
+
+                        switch (c.type) {
+                            case 0: // FLAT RECTANGLE
+                                g2.fillRect(-half, -half / 2, c.size, c.size / 2);
+                                break;
+                            case 1: // CIRCLE / DOT
+                                g2.fillOval(-half, -half, c.size, c.size);
+                                 break;
+                            case 2: // DIAMOND
+                                int[] xp = { 0, half, 0, -half };
+                                int[] yp = { -half, 0, half, 0 };
+                                g2.fillPolygon(xp, yp, 4);
+                                break;
+                            case 3: // STREAMER
+                                g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                                g2.setColor(c.color);
+
+                                java.awt.geom.GeneralPath path = new java.awt.geom.GeneralPath();
+                                path.moveTo(-c.size, 0);
+                                path.curveTo(
+                                    -c.size / 2f, -c.size / 2f,
+                                     c.size / 2f,  c.size / 2f,
+                                     c.size,        0
+                                );
+                                g2.draw(path);
+                                break;
+                             default:
+                                g2.fillRect(-half, -half / 2, c.size, c.size / 2);
+                                 break;
+                        }
+                        g2.dispose();
                     }
                 }
-            }
-        };
+            };
             
             // BOARDER
             JPanel centerWrapper;
@@ -728,51 +747,41 @@
         }
 
         void startConfetti() {
-
-            // Clear existing confetti
             confettiList.clear();
 
-            // Create initial confetti
-            for (int i = 0; i < 200; i++) {
-                int x = (int)(Math.random() * frame.getWidth());
-                int y = (int)(Math.random() * -500);
-                int size = 5 + (int)(Math.random() * 12);
-                int speed = 2 + (int)(Math.random() * 8);
+            Color[] colors = {
+                Color.RED, Color.YELLOW, new Color(0, 200, 100), Color.CYAN,
+                Color.MAGENTA, Color.ORANGE, Color.PINK, new Color(255, 215, 0),
+                new Color(130, 80, 255), new Color(255, 100, 180)
+            };
+
+            for (int i = 0; i < 250; i++) {
+                float x = (float)(Math.random() * frame.getWidth());
+                float y = (float)(Math.random() * -800); // STAGGERED START ABOVE SCREEN
+                int size = 8 + (int)(Math.random() * 14);
+                float speed = 1.5f + (float)(Math.random() * 4);
                 int type = (int)(Math.random() * 4);
-
-                Color[] colors = {
-                    Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN,
-                    Color.MAGENTA, Color.ORANGE, Color.PINK, new Color(255, 215, 0)
-                };
-                Color randomColor = colors[(int)(Math.random() * colors.length)];
-
-                confettiList.add(new Confetti(x, y, size, speed, randomColor, type));
+                Color color = colors[(int)(Math.random() * colors.length)];
+                confettiList.add(new Confetti(x, y, size, speed, color, type));
             }
 
-            confettiTimer = new Timer(30, e -> {
-                // Update all confetti
-                for (int i = 0; i < confettiList.size(); i++) {
-                    Confetti c = confettiList.get(i);
+             confettiTimer = new Timer(30, e -> {
+                for (Confetti c : confettiList) {
                     c.fall();
-                    
-                    // If confetti falls off screen, respawn at top
                     if (c.y > frame.getHeight()) {
-                        c.y = -50;
-                        c.x = (int)(Math.random() * frame.getWidth());
-                        c.size = 5 + (int)(Math.random() * 12);
-                        c.speed = 2 + (int)(Math.random() * 8);
+                        c.y = -20;
+                        c.x = (float)(Math.random() * frame.getWidth());
+                        c.size = 8 + (int)(Math.random() * 14);
+                        c.speed = 1.5f + (float)(Math.random() * 4);
                         c.type = (int)(Math.random() * 4);
-                        
-                        Color[] colors = {
-                            Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN,
-                            Color.MAGENTA, Color.ORANGE, Color.PINK, new Color(255, 215, 0)
-                        };
                         c.color = colors[(int)(Math.random() * colors.length)];
+                        c.dx = (float)(Math.random() * 2 - 1);
+                        c.angleSpeed = (float)(Math.random() * 6 - 3);
                     }
                 }
                 confettiPanel.repaint();
-            });
-            confettiTimer.start();
+             });
+             confettiTimer.start();
         }
 
 

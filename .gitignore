@@ -1,3 +1,12 @@
-"*.zip" 
-"*.zip" 
-"*.zip" 
+# Compiled files
+bin/
+*.class
+
+# VS Code
+.vscode/
+
+# Temp files
+tempCodeRunnerFile.java
+
+# Archives
+*.zip

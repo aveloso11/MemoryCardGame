@@ -343,7 +343,7 @@ public class MemeRotMemory {
     // ── Root panel ───────────────────────────────────────────────────────────
     JPanel root = new JPanel(new BorderLayout());
     root.setBackground(darkNavy);
-    root.setBorder(BorderFactory.createLineBorder(gold, 2));
+    root.setBorder(BorderFactory.createLineBorder(new Color(0x7F, 0x8E, 0xE3), 2));
 
     // ── Header ───────────────────────────────────────────────────────────────
     JPanel header = new JPanel(new BorderLayout());
@@ -478,9 +478,4 @@ private static JPanel buildSection(String heading, String[] lines,
 
     return card;
 }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> showLoadingScreen());
-    }
-     
 }

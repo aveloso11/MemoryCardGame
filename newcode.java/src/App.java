@@ -1,5 +1,7 @@
+import javax.swing.SwingUtilities;
+
 public class App {
-    public static void main(String[] args) throws Exception {
-        MatchCards mathCard = new MatchCards();
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> MemeRotMemory.showLoadingScreen());
     }
 }

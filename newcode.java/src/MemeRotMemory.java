@@ -3,11 +3,11 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.IOException;
 
 public class MemeRotMemory {
 
     static Clip menuClip;
-    //static boolean muted = false;
     static Font minecraftFont;
 
   static void setFullScreen(JFrame window) {
@@ -312,44 +312,171 @@ public class MemeRotMemory {
     }
 
     public static void showHowToPlayDialog(JFrame parent) {
-    String howToPlayText = 
-        "🎮 HOW TO PLAY 🎮\n\n" +
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-        "📌 GAME RULES\n" +
-        "───────────────────────────────────────────────────\n" +
-        "• Click on cards to flip them over\n" +
-        "• Find and match two identical cards\n" +
-        "• Match all pairs before time runs out!\n\n" +
-        
-        "⏱️ TIME SYSTEM\n" +
-        "───────────────────────────────────────────────────\n" +
-        "• Wrong match: ❌ -5 seconds\n" +
-        "• Correct match: ✅ +3 seconds\n" +
-        
-        "💰 SCORE & COINS\n" +
-        "───────────────────────────────────────────────────\n" +
-        "• Each correct match: +10 points\n" +
-        "• Each correct match: +5 coins\n" +
-        "• High score is saved automatically!\n\n" +
-        
-        "🛒 SHOP ITEMS\n" +
-        "───────────────────────────────────────────────────\n" +
-        "• BOOSTER (10 coins): Adds +10 seconds to timer\n" +
-        "• HINT (8 coins): Shows all unmatched cards for 1.5s\n\n" +
-        
-        "🎯 TIPS\n" +
-        "───────────────────────────────────────────────────\n" +
-        "• Try to remember card positions\n" +
-        "• Buy boosters when time is low\n" +
-        "• Use hints to find hard-to-match pairs\n" +
-        "• Save coins for booster and hints\n\n" +
-        
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
-        "           Good luck and have fun! 🍀";
-    
-    JOptionPane.showMessageDialog(parent, howToPlayText, 
-        "📖 HOW TO PLAY - Meme Rot Memory", 
-        JOptionPane.INFORMATION_MESSAGE);
+    Color darkNavy   = new Color(0x04, 0x0D, 0x43);
+    Color mediumNavy = new Color(0x15, 0x20, 0x55);
+    Color gold       = new Color(0xFF, 0xD8, 0x62);
+    Color lightGray  = new Color(0xE0, 0xE6, 0xED);
+
+    // ── Load Minecraft font ──────────────────────────────────────────────────
+    Font minecraftBase;
+    try {
+        minecraftBase = Font.createFont(Font.TRUETYPE_FONT, new File("src/fonts/Minecraft.otf"));
+        GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(minecraftBase);
+    } catch (FontFormatException | IOException e) {
+        e.printStackTrace();
+        minecraftBase = new Font("Monospaced", Font.PLAIN, 12); // fallback
+    }
+
+    // Derived sizes
+    final Font fontTitle    = minecraftBase.deriveFont(Font.PLAIN, 20f);
+    final Font fontSubtitle = minecraftBase.deriveFont(Font.PLAIN, 11f);
+    final Font fontHeading  = minecraftBase.deriveFont(Font.PLAIN, 13f);
+    final Font fontBody     = minecraftBase.deriveFont(Font.PLAIN, 11f);
+    final Font fontButton   = minecraftBase.deriveFont(Font.PLAIN, 12f);
+    final Font fontFooter   = minecraftBase.deriveFont(Font.PLAIN, 11f);
+
+    JDialog dialog = new JDialog(parent, "HOW TO PLAY - Meme Rot Memory", true);
+    dialog.setSize(520, 640);
+    dialog.setLocationRelativeTo(parent);
+    dialog.setResizable(false);
+
+    // ── Root panel ───────────────────────────────────────────────────────────
+    JPanel root = new JPanel(new BorderLayout());
+    root.setBackground(darkNavy);
+    root.setBorder(BorderFactory.createLineBorder(gold, 2));
+
+    // ── Header ───────────────────────────────────────────────────────────────
+    JPanel header = new JPanel(new BorderLayout());
+    header.setBackground(mediumNavy);
+    header.setBorder(BorderFactory.createEmptyBorder(18, 24, 18, 24));
+
+    JLabel title = new JLabel("HOW TO PLAY", SwingConstants.CENTER);
+    title.setFont(fontTitle);
+    title.setForeground(gold);
+
+    JLabel subtitle = new JLabel("Meme Rot Memory", SwingConstants.CENTER);
+    subtitle.setFont(fontSubtitle);
+    subtitle.setForeground(lightGray);
+
+    header.add(title, BorderLayout.CENTER);
+    header.add(subtitle, BorderLayout.SOUTH);
+
+    // ── Scroll body ──────────────────────────────────────────────────────────
+    JPanel body = new JPanel();
+    body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
+    body.setBackground(darkNavy);
+    body.setBorder(BorderFactory.createEmptyBorder(16, 20, 16, 20));
+
+    body.add(buildSection("GAME RULES", new String[]{
+        "* Click on cards to flip them over",
+        "* Find and match two identical cards",
+        "* Match all pairs before time runs out!"
+    }, gold, lightGray, mediumNavy, fontHeading, fontBody));
+
+    body.add(Box.createVerticalStrut(10));
+
+    body.add(buildSection("TIME SYSTEM", new String[]{
+        "* Wrong match:   -5 seconds",
+        "* Correct match: +3 seconds"
+    }, gold, lightGray, mediumNavy, fontHeading, fontBody));
+
+    body.add(Box.createVerticalStrut(10));
+
+    body.add(buildSection("SCORE & COINS", new String[]{
+        "* Each correct match: +10 points",
+        "* Each correct match: +5 coins",
+        "* High score is saved automatically!"
+    }, gold, lightGray, mediumNavy, fontHeading, fontBody));
+
+    body.add(Box.createVerticalStrut(10));
+
+    body.add(buildSection("SHOP ITEMS", new String[]{
+        "* BOOSTER (10 coins): +10 seconds to timer",
+        "* HINT   (8 coins):  Shows cards for 1.5s"
+    }, gold, lightGray, mediumNavy, fontHeading, fontBody));
+
+    body.add(Box.createVerticalStrut(10));
+
+    body.add(buildSection("TIPS", new String[]{
+        "* Try to remember card positions",
+        "* Buy boosters when time is low",
+        "* Use hints to find hard-to-match pairs",
+        "* Save coins for boosters and hints"
+    }, gold, lightGray, mediumNavy, fontHeading, fontBody));
+
+    JScrollPane scroll = new JScrollPane(body);
+    scroll.setBorder(BorderFactory.createEmptyBorder());
+    scroll.setBackground(darkNavy);
+    scroll.getViewport().setBackground(darkNavy);
+    scroll.getVerticalScrollBar().setUnitIncrement(12);
+
+    // ── Footer ───────────────────────────────────────────────────────────────
+    JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 12));
+    footer.setBackground(mediumNavy);
+
+    JLabel luck = new JLabel("Good luck and have fun!");
+    luck.setFont(fontFooter);
+    luck.setForeground(gold);
+
+    JButton closeBtn = new JButton("Got it!");
+    closeBtn.setFont(fontButton);
+    closeBtn.setBackground(gold);
+    closeBtn.setForeground(darkNavy);
+    closeBtn.setFocusPainted(false);
+    closeBtn.setBorder(BorderFactory.createEmptyBorder(8, 28, 8, 28));
+    closeBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    closeBtn.addActionListener(e -> dialog.dispose());
+
+    closeBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseEntered(java.awt.event.MouseEvent e) {
+            closeBtn.setBackground(new Color(0xFF, 0xC0, 0x30));
+        }
+        public void mouseExited(java.awt.event.MouseEvent e) {
+            closeBtn.setBackground(gold);
+        }
+    });
+
+    footer.add(luck);
+    footer.add(Box.createHorizontalStrut(20));
+    footer.add(closeBtn);
+
+    // ── Assemble ─────────────────────────────────────────────────────────────
+    root.add(header, BorderLayout.NORTH);
+    root.add(scroll,  BorderLayout.CENTER);
+    root.add(footer, BorderLayout.SOUTH);
+
+    dialog.setContentPane(root);
+    dialog.setVisible(true);
+}
+
+// ── Section builder ───────────────────────────────────────────────────────────
+private static JPanel buildSection(String heading, String[] lines,
+                                   Color gold, Color lightGray, Color mediumNavy,
+                                   Font fontHeading, Font fontBody) {
+    JPanel card = new JPanel();
+    card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+    card.setBackground(mediumNavy);
+    card.setBorder(BorderFactory.createCompoundBorder(
+        BorderFactory.createLineBorder(gold.darker(), 1),
+        BorderFactory.createEmptyBorder(10, 14, 12, 14)
+    ));
+    card.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+    JLabel hdr = new JLabel(heading);
+    hdr.setFont(fontHeading);
+    hdr.setForeground(gold);
+    hdr.setBorder(BorderFactory.createEmptyBorder(0, 0, 6, 0));
+    card.add(hdr);
+
+    for (String line : lines) {
+        JLabel lbl = new JLabel(line);
+        lbl.setFont(fontBody);
+        lbl.setForeground(lightGray);
+        lbl.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 0));
+        card.add(lbl);
+    }
+
+    return card;
 }
 
     public static void main(String[] args) {

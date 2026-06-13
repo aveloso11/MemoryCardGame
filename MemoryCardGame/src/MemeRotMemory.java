@@ -406,9 +406,12 @@ public class MemeRotMemory {
 
     JScrollPane scroll = new JScrollPane(body);
     scroll.setBorder(BorderFactory.createEmptyBorder());
-    scroll.setBackground(darkNavy);
-    scroll.getViewport().setBackground(darkNavy);
+    scroll.setOpaque(false);
+    scroll.getViewport().setOpaque(false);
     scroll.getVerticalScrollBar().setUnitIncrement(12);
+    scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+    scroll.getVerticalScrollBar().setOpaque(false);
+    scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
     // ── Footer ───────────────────────────────────────────────────────────────
     JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 12));

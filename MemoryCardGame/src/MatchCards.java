@@ -428,7 +428,7 @@ public class MatchCards {
 
         boosterButton = new JButton("Booster [" + boosterCount + "] (10 coins to buy)");
         boosterButton.setFont(new Font("Arial", Font.BOLD, 18));
-        boosterButton.setBackground(new Color(255, 140, 50));
+        boosterButton.setBackground(new Color(0x15, 0x20, 0x55));
         boosterButton.setForeground(Color.WHITE);
         boosterButton.setFocusPainted(false);
         boosterButton.addActionListener(e -> useOrBuyBooster());
@@ -436,14 +436,14 @@ public class MatchCards {
 
         tryAgainButton = new JButton("TRY AGAIN");
         tryAgainButton.setFont(new Font("Arial", Font.BOLD, 14));
-        tryAgainButton.setBackground(new Color(100, 100, 100));
-        tryAgainButton.setForeground(Color.WHITE);
+        tryAgainButton.setBackground(new Color(0xFF, 0xD8, 0x62));
+        tryAgainButton.setForeground(Color.BLACK);
         tryAgainButton.setFocusPainted(false);
         tryAgainButton.addActionListener(e -> tryAgain());
 
         hintButton = new JButton("Hint [" + hintCount + "] (8 coins to buy)");
         hintButton.setFont(new Font("Arial", Font.BOLD, 18));
-        hintButton.setBackground(new Color(80, 120, 255));
+        hintButton.setBackground(new Color(0x15, 0x20, 0x55));
         hintButton.setForeground(Color.WHITE);
         hintButton.setFocusPainted(false);
         hintButton.addActionListener(e -> useOrBuyHint());

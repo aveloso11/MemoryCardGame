@@ -316,40 +316,47 @@ public class MatchCards {
             tile.setOpaque(false);
             tile.setBorder(BorderFactory.createLineBorder(Color.WHITE, 4));
 
+            // CARD CLICK HANDLER - CORE GAME LOGIC
             tile.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!gameReady) return;
                     JButton tile = (JButton) e.getSource();
-                    if (tile.getIcon() != cardBackImageIcon) return;
-                    if (hideCardTimer != null && hideCardTimer.isRunning()) return;
+                    if (tile.getIcon() != cardBackImageIcon) return; // UNABLE CLICKS ON A CARD THATS FACE UP
+                    if (hideCardTimer != null && hideCardTimer.isRunning()) return; // UNABLE CLICKS IF CARDS ARE NOT MATCH
 
+                    // FIRST CARD SELECTION
                     if (card1Selected == null) {
-                        card1Selected = tile;
+                        card1Selected = tile; // CARD 1 SELECTED
                         int index = board.indexOf(card1Selected);
-                        card1Selected.setIcon(cardSet.get(index).cardImageIcon);
+                        card1Selected.setIcon(cardSet.get(index).cardImageIcon); // FLIP FACE UP
                         playFlipSound();
+                    
+                    // SECOND CARD SELECTION 
                     } else if (card2Selected == null && tile != card1Selected) {
-                        card2Selected = tile;
-                        int index = board.indexOf(card2Selected);
-                        card2Selected.setIcon(cardSet.get(index).cardImageIcon);
+                        card2Selected = tile; // CARD 2 SELECTED
+                        int index = board.indexOf(card2Selected);   
+                        card2Selected.setIcon(cardSet.get(index).cardImageIcon); // FLIP FACE UP
                         playFlipSound();
-
+                        
+                        // MATCH CARD CHECKER 
                         if (card1Selected.getIcon() != card2Selected.getIcon()) {
-                            timeLeft -= 5;
-                            timerLabel.setText("Time: " + timeLeft + "s");
+                            timeLeft -= 5; // WRONG GUESS -5 SECONDS
+                            timerLabel.setText("Time: " + timeLeft + "s"); // ON SCREEN TIMER 
                             hideCardTimer = new Timer(1000, new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
+                                    // IF NOT MATCH FLIP BOTH CARDS BACK
                                     card1Selected.setIcon(cardBackImageIcon);
                                     card2Selected.setIcon(cardBackImageIcon);
-                                    card1Selected = null;
+                                    card1Selected = null; 
                                     card2Selected = null;
                                 }
                             });
-                            hideCardTimer.setRepeats(false);
+                            hideCardTimer.setRepeats(false); // FALSE SINCE WE ARE GOING TO SELECT ANOTHER CARDS
                             hideCardTimer.start();
                         } else {
+                            // REWARD FOR MATCH CARDS
                             score += 10;
                             timeLeft += 3;
                             timerLabel.setText("Time: " + timeLeft + "s");
@@ -362,10 +369,10 @@ public class MatchCards {
                                 highScore = score;
                                 saveHighScore();
                             }
-
+                            // MATCH CARDS STAY FACE UP
                             card1Selected = null;
                             card2Selected = null;
-
+                            // WIN CONDITION CHECK
                             boolean allMatched = true;
                             for (JButton btn : board) {
                                 if (btn.isEnabled() && btn.getIcon() == cardBackImageIcon) {
@@ -375,6 +382,7 @@ public class MatchCards {
                             }
 
                             if (allMatched) {
+                                // WIN RESULT  
                                 gameTimer.stop();
                                 gameActive = false;
 
@@ -384,7 +392,7 @@ public class MatchCards {
                                 confettiPanel.setVisible(true);
                                 startConfetti();
 
-                                // ── WIN DIALOG ────────────────────────────
+                                // WIN DIALOG 
                                 int response = showStyledDialog(
                                     "Victory!",
                                     "CONGRATS! YOU WIN!\n" +
@@ -401,7 +409,7 @@ public class MatchCards {
 
                                 if (response == JOptionPane.YES_OPTION) {
                                     if (winClip != null && winClip.isRunning()) winClip.stop();
-                                    resetGame();
+                                    resetGame();  // START NEW ROUND WITH THE SAME DIFFICULTY 
                                     playMusic("sounds/game.wav", false);
                                 } else {
                                     returnToDifficultyScreen();
@@ -478,14 +486,6 @@ public class MatchCards {
     // ══════════════════════════════════════════════════════════════════════════
     //  STYLED DIALOG SYSTEM
     // ══════════════════════════════════════════════════════════════════════════
-
-    /**
-     * Shows a styled modal dialog.
-     * @param title    Header text
-     * @param message  Body text (use \n for line breaks)
-     * @param isConfirm  true = YES/NO buttons, false = OK button
-     * @return JOptionPane.YES_OPTION / NO_OPTION / OK_OPTION
-     */
     int showStyledDialog(String title, String message, boolean isConfirm) {
         Font fontTitle  = minecraftBase.deriveFont(Font.PLAIN, 15f);
         Font fontBody   = minecraftBase.deriveFont(Font.PLAIN, 11f);
@@ -715,7 +715,7 @@ public class MatchCards {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // ── CONFETTI ─────────────────────────────────────────────────────────────
+    // CONFETTI ANNIMATION CONTROLLER
     void startConfetti() {
         confettiList.clear();
         Color[] colors = {
@@ -732,6 +732,7 @@ public class MatchCards {
             Color color = colors[(int)(Math.random() * colors.length)];
             confettiList.add(new Confetti(x, y, size, speed, color, type));
         }
+        // ANIMATION LOOP FOR CONFETTI
         confettiTimer = new Timer(30, e -> {
             for (Confetti c : confettiList) {
                 c.fall();
@@ -746,9 +747,9 @@ public class MatchCards {
                     c.angleSpeed = (float)(Math.random() * 6 - 3);
                 }
             }
-            confettiPanel.repaint();
+            confettiPanel.repaint(); // CALLS SWING TO REDRAW THE PANEL
         });
-        confettiTimer.start();
+        confettiTimer.start(); // START TO ANIMATION LOOP
     }
 
     // ── SOUND SYSTEM ─────────────────────────────────────────────────────────
@@ -1068,6 +1069,7 @@ public class MatchCards {
         for (int i = 0; i < cardSet.size(); i++) {
             int j = (int)(Math.random() * cardSet.size());
             Card temp = cardSet.get(i);
+            // RANDMOMIZES CARD POSITIONS
             cardSet.set(i, cardSet.get(j));
             cardSet.set(j, temp);
         }
